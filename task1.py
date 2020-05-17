@@ -9,9 +9,10 @@ def productions(nullables, x):
     # all possible combination of nullables
     combos = list(powerset(nullables))
     for combo in combos:
-        s = x[2:]
-        for c in combo:
-            s = s.replace(c, '')
+        s = ''
+        for idx, val in enumerate(x[2:]):
+            if idx not in combo:
+                s+=val
         if len(s)>0:
             prod.append(x[:2]+s)
     return prod
@@ -41,12 +42,11 @@ def remove(p):
     p2 = []
     for x in p:
         #print(list(set(nullables).intersection(x[2:])))
-        p2.extend(productions(list(set(nullables).intersection(x[2:])), x))
+        p2.extend(productions([i for i, y in enumerate(x[2:]) if y in nullables], x))
     p.extend(p2)
 
     # remove productions in form A -> _
     p = set(x for x in p if '_' not in x)
-    p = [x for x in p if x[0]=='S'] + [x for x in p if x[0]!='S']
     return p
 
 
